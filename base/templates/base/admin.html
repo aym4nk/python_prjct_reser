@@ -1,0 +1,365 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <title>Admin Dashboard</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+          rel="stylesheet">
+
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=DM+Sans:wght@300;400;500&display=swap"
+          rel="stylesheet">
+
+    <style>
+
+        body{
+            background:#FAF8F5;
+            font-family:'DM Sans', sans-serif;
+            color:#1C1A17;
+        }
+
+        /* NAVBAR */
+
+        .hotel-nav{
+            background:white;
+            padding:20px 40px;
+            border-bottom:1px solid rgba(0,0,0,0.08);
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+        }
+
+        .hotel-brand{
+            font-family:'Playfair Display', serif;
+            font-size:30px;
+            text-decoration:none;
+            color:#1C1A17;
+        }
+
+        .hotel-brand span{
+            color:#B8965A;
+        }
+
+        .logout-btn{
+            text-decoration:none;
+            color:#B03A2E;
+            font-size:14px;
+        }
+
+        /* TITLES */
+
+        .section-title{
+            font-family:'Playfair Display', serif;
+            font-size:42px;
+            margin-bottom:25px;
+        }
+
+        /* TABLE */
+
+        .table-box{
+            background:white;
+            border-radius:18px;
+            padding:25px;
+            border:1px solid rgba(0,0,0,0.08);
+            margin-bottom:50px;
+            overflow:hidden;
+        }
+
+        .table{
+            margin-bottom:0;
+        }
+
+        .table thead{
+            background:#F5F2EC;
+        }
+
+        .table th{
+            color:#6B6357;
+            font-weight:500;
+            border:none;
+            padding:16px;
+        }
+
+        .table td{
+            vertical-align:middle;
+            padding:16px;
+            border-color:rgba(0,0,0,0.05);
+        }
+
+        .badge-success{
+            background:#E8F5EE;
+            color:#1a6e3e;
+            padding:8px 14px;
+            border-radius:20px;
+            font-size:13px;
+        }
+
+        .badge-danger{
+            background:#FAEAEA;
+            color:#992222;
+            padding:8px 14px;
+            border-radius:20px;
+            font-size:13px;
+        }
+
+        /* BUTTONS */
+
+        .btn-action{
+            text-decoration:none;
+            font-size:14px;
+            margin-right:12px;
+            position:relative;
+            color:#1C1A17;
+        }
+
+        .btn-action::after{
+            content:"";
+            position:absolute;
+            left:0;
+            bottom:-4px;
+            width:0%;
+            height:2px;
+            background:#B8965A;
+            transition:0.3s;
+        }
+
+        .btn-action:hover::after{
+            width:100%;
+        }
+
+        .delete{
+            color:#B03A2E;
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<!-- NAVBAR -->
+<nav class="hotel-nav">
+
+    <a href="#" class="hotel-brand">
+        GST<span>.</span>HOTEL
+    </a>
+
+    <div>
+
+        👑 {{ user.username }}
+
+        <a href="{% url 'logout' %}"
+           class="logout-btn ms-4">
+
+            Logout
+
+        </a>
+
+    </div>
+
+</nav>
+
+<div class="container py-5">
+
+    <!-- SALLES -->
+    <div class="section-title">
+        Gestion des Salles
+    </div>
+
+    <div class="table-box">
+
+        <table class="table text-center">
+
+            <thead>
+
+                <tr>
+
+                    <th>ID</th>
+                    <th>Type</th>
+                    <th>Prix</th>
+                    <th>Disponibilité</th>
+                    <th>Action</th>
+
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+                {% for item in data %}
+
+                <tr>
+
+                    <td>{{ item.salle.id }}</td>
+
+                    <td>{{ item.salle.type }}</td>
+
+                    <td>{{ item.salle.prix }} DH</td>
+
+                    <td>
+
+                        {% if item.disponible %}
+
+                            <span class="badge-success">
+                                Disponible
+                            </span>
+
+                        {% else %}
+
+                            <span class="badge-danger">
+                                Non disponible
+                            </span>
+
+                        {% endif %}
+
+                    </td>
+
+                    <td>
+
+                        <a href="{% url 'edit_salle' item.salle.id %}"
+                           class="btn-action">
+
+                            Modifier
+
+                        </a>
+
+                        <a href="{% url 'delete_salle' item.salle.id %}"
+                           class="btn-action delete">
+
+                            Supprimer
+
+                        </a>
+
+                    </td>
+
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+    <!-- RESERVATIONS -->
+    <div class="section-title">
+        Réservations
+    </div>
+
+    <div class="table-box">
+
+        <table class="table text-center">
+
+            <thead>
+
+                <tr>
+
+                    <th>ID</th>
+                    <th>Client</th>
+                    <th>Salle</th>
+                    <th>Date début</th>
+                    <th>Date fin</th>
+                    <th>Statut</th>
+
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+                {% for r in reservations %}
+
+                <tr>
+
+                    <td>{{ r.id }}</td>
+
+                    <td>{{ r.client.nom }}</td>
+
+                    <td>{{ r.salle.type }}</td>
+
+                    <td>{{ r.dateDebut }}</td>
+
+                    <td>{{ r.dateFin }}</td>
+
+                    <td>
+
+                        <span class="badge-success">
+                            {{ r.statut }}
+                        </span>
+
+                    </td>
+
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+    <!-- USERS -->
+    <div class="section-title">
+        Utilisateurs
+    </div>
+
+    <div class="table-box">
+
+        <table class="table text-center">
+
+            <thead>
+
+                <tr>
+
+                    <th>ID</th>
+                    <th>Username</th>
+                    <th>Email</th>
+                    <th>Action</th>
+
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+                {% for u in users %}
+
+                <tr>
+
+                    <td>{{ u.id }}</td>
+
+                    <td>{{ u.username }}</td>
+
+                    <td>{{ u.email }}</td>
+
+                    <td>
+
+                        <a href="{% url 'delete_user' u.id %}"
+                           class="btn-action delete">
+
+                            Delete
+
+                        </a>
+
+                    </td>
+
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+</body>
+</html>

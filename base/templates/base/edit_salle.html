@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <title>Modifier Salle</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+          rel="stylesheet">
+
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=DM+Sans:wght@300;400;500&display=swap"
+          rel="stylesheet">
+
+    <style>
+
+body{
+    margin:0;
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    background:#FAF8F5;
+    font-family:'DM Sans', sans-serif;
+    color:#1C1A17;
+    padding:40px 20px;
+}
+
+.edit-card{
+    width:100%;
+    max-width:650px;
+    background:white;
+    border-radius:22px;
+    padding:45px;
+    border:1px solid rgba(0,0,0,0.08);
+    box-shadow:0 10px 35px rgba(0,0,0,0.05);
+}
+
+.title{
+    font-family:'Playfair Display', serif;
+    font-size:42px;
+    margin-bottom:35px;
+    color:#1C1A17;
+}
+
+.form-label{
+    color:#6B6357;
+    margin-bottom:10px;
+    font-size:14px;
+}
+
+.form-control,
+.form-select{
+    background:#F5F2EC;
+    border:none;
+    color:#1C1A17;
+    padding:14px;
+    border-radius:14px;
+    margin-bottom:22px;
+    box-shadow:none !important;
+}
+
+.form-control:focus,
+.form-select:focus{
+    background:#EFE9DE;
+    color:#1C1A17;
+}
+
+.btn-save{
+    border:none;
+    background:#B8965A;
+    color:white;
+    padding:12px 28px;
+    border-radius:12px;
+    transition:0.3s;
+    margin-right:15px;
+}
+
+.btn-save:hover{
+    background:#9f7d44;
+    transform:translateY(-2px);
+}
+
+.btn-back{
+    text-decoration:none;
+    color:#1C1A17;
+    position:relative;
+    font-weight:500;
+}
+
+.btn-back::after{
+    content:"";
+    position:absolute;
+    left:0;
+    bottom:-5px;
+    width:0%;
+    height:2px;
+    background:#B8965A;
+    transition:0.3s;
+}
+
+.btn-back:hover::after{
+    width:100%;
+}
+    </style>
+
+</head>
+
+<body>
+
+<div class="edit-card">
+
+    <div class="title">
+
+        Modifier Salle
+
+    </div>
+
+    <form method="POST">
+
+        {% csrf_token %}
+
+        <!-- TYPE -->
+        <div class="mb-3">
+
+            <label class="form-label">
+
+                Type
+
+            </label>
+
+            <input type="text"
+                   name="type"
+                   value="{{ salle.type }}"
+                   class="form-control">
+
+        </div>
+
+        <!-- PRIX -->
+        <div class="mb-3">
+
+            <label class="form-label">
+
+                Prix
+
+            </label>
+
+            <input type="number"
+                   step="0.01"
+                   name="prix"
+                   value="{{ salle.prix }}"
+                   class="form-control">
+
+        </div>
+
+        <!-- DATE -->
+        <div class="mb-3">
+
+            <label class="form-label">
+
+                Date disponibilité
+
+            </label>
+
+            <input type="date"
+                   name="date"
+                   value="{{ salle.disponibilite.date|date:'Y-m-d' }}"
+                   class="form-control">
+
+        </div>
+
+        <!-- DISPONIBILITE -->
+        <div class="mb-4">
+
+            <label class="form-label">
+
+                Disponibilité
+
+            </label>
+
+            <select name="disponible"
+                    class="form-select">
+
+                <option value="True"
+                {% if salle.disponibilite.estDisponible %}
+                    selected
+                {% endif %}
+                >
+                    Disponible
+                </option>
+
+                <option value="False"
+                {% if not salle.disponibilite.estDisponible %}
+                    selected
+                {% endif %}
+                >
+                    Non disponible
+                </option>
+
+            </select>
+
+        </div>
+
+        <!-- BUTTONS -->
+
+        <button type="submit"
+                class="btn-save">
+
+            Sauvegarder
+
+        </button>
+
+        <a href="{% url 'admin_dashboard' %}"
+           class="btn-back">
+
+            Retour
+
+        </a>
+
+    </form>
+
+</div>
+
+</body>
+</html>
