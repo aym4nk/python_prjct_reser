@@ -215,59 +215,236 @@
 
         /* FEATURES */
 
-        .features{
-            padding:90px 40px;
-            transition:0.4s;
+        .features-section{
+
+            padding:100px 10%;
+
+            background:#FAF8F5;
         }
 
         .section-title{
+
             text-align:center;
-            font-family:'Playfair Display', serif;
-            font-size:50px;
-            margin-bottom:60px;
+
+            font-size:55px;
+
+            font-weight:bold;
+
+            margin-bottom:70px;
+
+            color:#1C1A17;
         }
 
-        .feature-box{
+        .features-grid{
+
+            display:grid;
+
+            grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+
+            gap:35px;
+        }
+
+        .feature-card{
+
             background:white;
-            padding:35px;
-            border-radius:18px;
-            border:1px solid rgba(0,0,0,0.08);
-            transition:0.3s;
-            height:100%;
+
+            border-radius:25px;
+
+            padding:45px 35px;
+
+            transition:0.4s;
+
+            border:1px solid rgba(0,0,0,0.06);
+
+            position:relative;
+
+            overflow:hidden;
         }
 
-        .feature-box:hover{
-            transform:translateY(-8px);
-            box-shadow:0 12px 30px rgba(0,0,0,0.07);
+        .feature-card::before{
+
+            content:"";
+
+            position:absolute;
+
+            top:0;
+
+            left:0;
+
+            width:100%;
+
+            height:4px;
+
+            background:#B8965A;
+
+            transform:scaleX(0);
+
+            transition:0.4s;
+        }
+
+        .feature-card:hover::before{
+
+            transform:scaleX(1);
+        }
+
+        .feature-card:hover{
+
+            transform:translateY(-12px);
+
+            box-shadow:0 20px 40px rgba(0,0,0,0.08);
         }
 
         .feature-icon{
-            font-size:40px;
-            margin-bottom:20px;
+
+            width:70px;
+
+            height:70px;
+
+            border-radius:20px;
+
+            background:#f5efe5;
+
+            display:flex;
+
+            align-items:center;
+
+            justify-content:center;
+
+            font-size:30px;
+
+            margin-bottom:25px;
         }
 
-        .feature-box h4{
-            font-size:24px;
-            margin-bottom:12px;
+        .feature-card h3{
+
+            font-size:30px;
+
+            margin-bottom:18px;
+
+            color:#1C1A17;
         }
 
-        .feature-box p{
-            color:#6B6357;
+        .feature-card p{
+
+            color:#666;
+
+            line-height:1.8;
+
+            font-size:16px;
+        }
+
+        /* RESPONSIVE */
+
+        @media(max-width:768px){
+
+            .features-section{
+
+                padding:70px 7%;
+            }
+
+            .section-title{
+
+                font-size:40px;
+            }
+
         }
 
         /* FOOTER */
 
-        footer{
-            background:#1C1A17;
-            color:#ccc;
-            text-align:center;
-            padding:25px;
-            font-size:14px;
-            transition:0.4s;
+       .footer{
+            background:#0f1722;
+            margin-top:80px;
+            padding:60px 10% 25px;
+            color:white;
         }
 
-        /* DARK MODE */
+        .footer-container{
+            display:flex;
+            justify-content:space-between;
+            align-items:flex-start;
+            flex-wrap:wrap;
+            gap:40px;
+        }
 
+        .footer-brand h2{
+            font-size:34px;
+            font-weight:bold;
+            margin-bottom:10px;
+            color:#B8965A;
+        }
+
+        .footer-brand p{
+            color:#bdbdbd;
+            max-width:300px;
+            line-height:1.7;
+        }
+
+        .footer-links,
+        .footer-social{
+            display:flex;
+            flex-direction:column;
+            gap:14px;
+        }
+
+        .footer-links a,
+        .footer-social a{
+            text-decoration:none;
+            color:#dcdcdc;
+            transition:0.3s;
+            position:relative;
+            width:fit-content;
+        }
+
+        .footer-links a::after,
+        .footer-social a::after{
+            content:"";
+            position:absolute;
+            left:0;
+            bottom:-4px;
+            width:0%;
+            height:2px;
+            background:#B8965A;
+            transition:0.3s;
+        }
+
+        .footer-links a:hover,
+        .footer-social a:hover{
+            color:#B8965A;
+        }
+
+        .footer-links a:hover::after,
+        .footer-social a:hover::after{
+
+            width:100%;
+        }
+
+        .footer-bottom{
+            margin-top:50px;
+            padding-top:20px;
+            border-top:1px solid rgba(255,255,255,0.08);
+            text-align:center;
+            color:#9d9d9d;
+            font-size:14px;
+        }
+
+        /* RESPONSIVE */
+        @media(max-width:768px){
+            .footer-container{
+                flex-direction:column;
+                gap:30px;
+            }
+
+            .footer{
+                text-align:center;
+            }
+
+            .footer-links,
+            .footer-social{
+                align-items:center;
+            }
+
+        }
+        /* DARK MODE */
         .dark-mode{
             background:#111;
             color:white;
@@ -415,73 +592,66 @@
 </section>
 
 <!-- FEATURES -->
-<section class="features">
-
-    <div class="section-title">
-        Pourquoi choisir GST HOTEL
-    </div>
+<section class="features-section">
 
     <div class="container">
 
-        <div class="row g-4">
+        <div class="section-title">
 
-            <div class="col-md-4">
+            Pourquoi choisir notre hôtel ?
 
-                <div class="feature-box">
+        </div>
 
-                    <div class="feature-icon">
-                        ⚡
-                    </div>
+        <div class="features-grid">
 
-                    <h4>
-                        Réservation rapide
-                    </h4>
+            <!-- FEATURE 1 -->
+            <div class="feature-card">
 
-                    <p>
-                        Réservez votre chambre en quelques clics seulement.
-                    </p>
-
+                <div class="feature-icon">
+                    ⚡
                 </div>
+
+                <h3>
+                    Réservation rapide
+                </h3>
+
+                <p>
+                    Réservez votre chambre en quelques secondes avec une expérience fluide.
+                </p>
 
             </div>
 
-            <div class="col-md-4">
+            <!-- FEATURE 2 -->
+            <div class="feature-card">
 
-                <div class="feature-box">
-
-                    <div class="feature-icon">
-                        💰
-                    </div>
-
-                    <h4>
-                        Meilleurs prix
-                    </h4>
-
-                    <p>
-                        Profitez des meilleurs tarifs adaptés à tous.
-                    </p>
-
+                <div class="feature-icon">
+                    💰
                 </div>
+
+                <h3>
+                    Meilleurs prix
+                </h3>
+
+                <p>
+                    Profitez des meilleurs tarifs adaptés à tous les budgets.
+                </p>
 
             </div>
 
-            <div class="col-md-4">
+            <!-- FEATURE 3 -->
+            <div class="feature-card">
 
-                <div class="feature-box">
-
-                    <div class="feature-icon">
-                        📞
-                    </div>
-
-                    <h4>
-                        Support 24/7
-                    </h4>
-
-                    <p>
-                        Une assistance disponible à tout moment.
-                    </p>
-
+                <div class="feature-icon">
+                    📞
                 </div>
+
+                <h3>
+                    Support 24/7
+                </h3>
+
+                <p>
+                    Notre équipe reste disponible à tout moment pour vous aider.
+                </p>
 
             </div>
 
@@ -492,9 +662,65 @@
 </section>
 
 <!-- FOOTER -->
-<footer>
+<footer class="footer">
 
-    © 2026 GST HOTEL — Tous droits réservés
+    <div class="footer-container">
+
+        <div class="footer-brand">
+
+            <h2>
+                GST.HOTEL
+            </h2>
+
+            <p>
+                Luxury rooms • Premium experience • 24/7 service
+            </p>
+
+        </div>
+
+        <div class="footer-links">
+
+            <a href="#">
+                Chambres
+            </a>
+
+            <a href="#">
+                Réservations
+            </a>
+
+            <a href="#">
+                Services
+            </a>
+
+            <a href="#">
+                Contact
+            </a>
+
+        </div>
+
+        <div class="footer-social">
+
+            <a href="#">
+                Instagram
+            </a>
+
+            <a href="#">
+                Facebook
+            </a>
+
+            <a href="#">
+                TikTok
+            </a>
+
+        </div>
+
+    </div>
+
+    <div class="footer-bottom">
+
+        © 2026 GST HOTEL — Tous droits réservés
+
+    </div>
 
 </footer>
 

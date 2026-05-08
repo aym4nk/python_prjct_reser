@@ -4,13 +4,15 @@ from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from reservations.models import Reservation
 from salles.models import Salle, Disponibilite
-
-
-
-from reservations.models import Reservation
-from salles.models import Salle
+from django.http import HttpResponse
+from reportlab.pdfgen import canvas
+from django.conf import settings
+import os
 from users.models import Client
 from datetime import date
+from reportlab.pdfbase import pdfmetrics
+from reportlab.pdfbase.ttfonts import TTFont
+
 
 
 # 🏠 Accueil
@@ -52,9 +54,6 @@ def login_view(request):
 
 
 # 📝 Register
-from users.models import Client
-
-
 def register_view(request):
 
     if request.user.is_authenticated:
@@ -104,9 +103,6 @@ def register_view(request):
 
 
 # 👤 Main
-from datetime import date
-from reservations.models import Reservation
-
 @login_required
 def main(request):
 
@@ -134,7 +130,9 @@ def main(request):
         'data': data
     })
 
-# 👑 Dashboard admin
+
+
+# Dashboard admin
 @login_required
 def admin_dashboard(request):
 
@@ -171,7 +169,7 @@ def admin_dashboard(request):
         'reservations': reservations
 
     })
-# 🚪 Logout
+# Logout
 def logout_view(request):
 
     logout(request)
@@ -179,7 +177,7 @@ def logout_view(request):
     return redirect('acceuil')
 
 
-# 🔄 Toggle disponibilité
+# Toggle disponibilité
 @login_required
 def toggle_dispo(request, salle_id):
 
@@ -192,7 +190,7 @@ def toggle_dispo(request, salle_id):
     return redirect('admin_dashboard')
 
 
-# ✏️ Modifier salle
+#  Modifier salle
 @login_required
 def edit_salle(request, salle_id):
 
@@ -226,7 +224,7 @@ def edit_salle(request, salle_id):
     })
 
 
-# ❌ Supprimer salle
+# Supprimer salle
 @login_required
 def delete_salle(request, salle_id):
 
@@ -240,7 +238,7 @@ def delete_salle(request, salle_id):
     return redirect('admin_dashboard')
 
 
-# ❌ Delete user
+#  Delete user
 @login_required
 def delete_user(request, user_id):
 
@@ -277,12 +275,12 @@ def reserver_salle(request, salle_id):
                 'error': 'Salle déjà réservée pour cette période'
             })
 
-        # 🔥 client lié
+        # client lié
         client = Client.objects.filter(
             email=request.user.email
         ).first()
 
-        # 🔥 create reservation
+        # create reservation
         Reservation.objects.create(
             salle=salle,
             client=client,
@@ -298,7 +296,6 @@ def reserver_salle(request, salle_id):
     })
     
     
-from reservations.models import Reservation
 @login_required
 def panier(request):
 
@@ -381,3 +378,193 @@ def rejeter_reservation(request, reservation_id):
         dispo.save()
 
     return redirect('notifications_admin')
+
+
+
+
+@login_required
+def telecharger_facture(request, reservation_id):
+
+    reservation = get_object_or_404(
+        Reservation,
+        id=reservation_id
+    )
+
+    response = HttpResponse(
+        content_type='application/pdf'
+    )
+
+    response['Content-Disposition'] = (
+        f'attachment; filename=\"facture_{reservation.id}.pdf\"'
+    )
+
+
+
+    pdfmetrics.registerFont(
+        TTFont(
+            'Handwritten',
+            'C:/Windows/Fonts/seguisb.ttf'
+        )
+    )
+
+    p = canvas.Canvas(response)
+
+    # BACKGROUND
+    p.setFillColorRGB(0.96, 0.95, 0.93)
+
+    p.rect(
+        0,
+        0,
+        600,
+        850,
+        fill=1
+    )
+
+    # HEADER
+    p.setFillColorRGB(0.72, 0.58, 0.35)
+
+    p.rect(
+        0,
+        760,
+        600,
+        90,
+        fill=1
+    )
+
+    # TITLE
+    p.setFillColorRGB(1, 1, 1)
+
+    p.setFont(
+        "Handwritten",
+        30
+    )
+
+    p.drawString(
+        180,
+        795,
+        "GST.HOTEL"
+    )
+
+    p.setFont(
+        "Handwritten",
+        16
+    )
+
+    p.drawString(
+        240,
+        770,
+        "FACTURE"
+    )
+
+    # WHITE BOX
+    p.setFillColorRGB(1, 1, 1)
+
+    p.roundRect(
+        60,
+        160,
+        480,
+        540,
+        20,
+        fill=1
+    )
+
+    # TEXT COLOR
+    p.setFillColorRGB(0.1, 0.1, 0.1)
+
+    # TITLE INFO
+    p.setFont(
+        "Handwritten",
+        20
+    )
+
+    p.drawString(
+        100,
+        650,
+        "Informations"
+    )
+
+    # CONTENT
+    p.setFont(
+        "Handwritten",
+        15
+    )
+
+    p.drawString(
+        100,
+        600,
+        f"Client : {reservation.client.nom}"
+    )
+
+    p.drawString(
+        100,
+        555,
+        f"Salle : {reservation.salle.type}"
+    )
+
+    p.drawString(
+        100,
+        510,
+        f"Prix : {reservation.salle.prix} DH"
+    )
+
+    p.drawString(
+        100,
+        465,
+        f"Date debut : {reservation.dateDebut}"
+    )
+
+    p.drawString(
+        100,
+        420,
+        f"Date fin : {reservation.dateFin}"
+    )
+
+    p.drawString(
+        100,
+        375,
+        f"Statut : {reservation.statut}"
+    )
+
+    # GOLD LINE
+    p.setStrokeColorRGB(0.72, 0.58, 0.35)
+
+    p.line(
+        100,
+        345,
+        500,
+        345
+    )
+    #qr code
+    qr_path = os.path.join(
+        settings.BASE_DIR,
+        'base',
+        'static',
+        'images',
+        'qr.png'
+    )
+
+    p.drawImage(
+        qr_path,
+        350,
+        190,
+        width=130,
+        height=130
+    )
+
+    # FOOTER
+    p.setFillColorRGB(0.45, 0.45, 0.45)
+
+    p.setFont(
+        "Handwritten",
+        11
+    )
+
+    p.drawString(
+        170,
+        110,
+        "Merci pour votre confiance - GST HOTEL"
+    )
+
+    p.save()
+
+    return response

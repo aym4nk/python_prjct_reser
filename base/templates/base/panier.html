@@ -157,6 +157,29 @@
             color:white;
         }
 
+        .btn-facture{
+            display:inline-block;
+            margin-top:18px;
+            text-decoration:none;
+            color:#B8965A;
+            font-weight:400;
+            position:relative;
+            margin-left:36.98%;
+        }
+        .btn-facture::after{
+            content:"";
+            position:absolute;
+            left:0;
+            bottom:-5px;
+            width:0%;
+            height:2px;
+            background:#B8965A;
+            transition:0.3s;
+        }
+        .btn-facture:hover::after{
+            width:100%;
+        }
+
     </style>
 
 </head>
@@ -221,6 +244,10 @@
            onclick="return confirm('Annuler cette réservation ?')">
 
             Annuler réservation
+
+        </a>
+        <a href="{% url 'telecharger_facture' r.id %}" class="btn-facture">
+            Télécharger facture
 
         </a>
 

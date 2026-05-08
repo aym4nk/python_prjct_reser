@@ -10,6 +10,7 @@ from .views import (
     logout_view,
     admin_dashboard,
     rejeter_reservation,
+    telecharger_facture,
     toggle_dispo,
     edit_salle,
     delete_salle,
@@ -90,5 +91,10 @@ path(
     'rejeter-reservation/<int:reservation_id>/',
     rejeter_reservation,
     name='rejeter_reservation'
+),
+path(
+    'telecharger-facture/<int:reservation_id>/',
+    telecharger_facture,
+    name='telecharger_facture'
 ),
 ]
