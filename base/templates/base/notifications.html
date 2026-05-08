@@ -1,0 +1,268 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <title>Notifications</title>
+
+    <link rel="icon"
+          type="image/png"
+          href="{% static 'images/favicon.png' %}">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+          rel="stylesheet">
+
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=DM+Sans:wght@300;400;500&display=swap"
+          rel="stylesheet">
+
+    <style>
+
+        body{
+            background:#FAF8F5;
+            font-family:'DM Sans', sans-serif;
+            color:#1C1A17;
+        }
+
+        /* NAVBAR */
+
+        .hotel-nav{
+            background:white;
+            padding:20px 40px;
+            border-bottom:1px solid rgba(0,0,0,0.08);
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+        }
+
+        .hotel-brand{
+            font-family:'Playfair Display', serif;
+            font-size:30px;
+            text-decoration:none;
+            color:#1C1A17;
+        }
+
+        .hotel-brand span{
+            color:#B8965A;
+        }
+
+        .back-btn{
+            text-decoration:none;
+            color:#1C1A17;
+            position:relative;
+            font-weight:500;
+        }
+
+        .back-btn::after{
+            content:"";
+            position:absolute;
+            left:0;
+            bottom:-5px;
+            width:0%;
+            height:2px;
+            background:#B8965A;
+            transition:0.3s;
+        }
+
+        .back-btn:hover::after{
+            width:100%;
+        }
+
+        /* CONTENT */
+
+        .container-box{
+            width:90%;
+            margin:auto;
+            padding-top:60px;
+        }
+
+        .title{
+            font-family:'Playfair Display', serif;
+            font-size:50px;
+            margin-bottom:40px;
+        }
+
+        /* CARD */
+
+        .notif-card{
+            background:white;
+            border-radius:18px;
+            padding:30px;
+            border:1px solid rgba(0,0,0,0.08);
+            margin-bottom:25px;
+            transition:0.3s;
+        }
+
+        .notif-card:hover{
+            transform:translateY(-5px);
+            box-shadow:0 10px 25px rgba(0,0,0,0.05);
+        }
+
+        .notif-user{
+            font-size:26px;
+            font-weight:bold;
+            margin-bottom:12px;
+        }
+
+        .notif-text{
+            color:#6B6357;
+            font-size:17px;
+            margin-bottom:20px;
+        }
+
+        .badge-wait{
+            background:#FFF3CD;
+            color:#856404;
+            padding:8px 14px;
+            border-radius:20px;
+            font-size:13px;
+        }
+
+        /* BUTTONS */
+
+        .btn-action{
+            text-decoration:none;
+            margin-right:22px;
+            position:relative;
+            font-weight:500;
+        }
+
+        .btn-action::after{
+            content:"";
+            position:absolute;
+            left:0;
+            bottom:-5px;
+            width:0%;
+            height:2px;
+            transition:0.3s;
+        }
+
+        .btn-action:hover::after{
+            width:100%;
+        }
+
+        .confirm{
+            color:#1a6e3e;
+        }
+
+        .confirm::after{
+            background:#1a6e3e;
+        }
+
+        .reject{
+            color:#B03A2E;
+        }
+
+        .reject::after{
+            background:#B03A2E;
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<!-- NAVBAR -->
+<nav class="hotel-nav">
+
+    <a href="#" class="hotel-brand">
+        GST<span>.</span>HOTEL
+    </a>
+
+    <a href="{% url 'admin_dashboard' %}"
+       class="back-btn">
+
+        Retour Dashboard
+
+    </a>
+
+</nav>
+
+<div class="container-box">
+
+    <div class="title">
+
+        Notifications
+
+    </div>
+
+    {% for r in reservations %}
+
+    {% if r.statut == "En attente" %}
+
+    <div class="notif-card">
+
+        <div class="notif-user">
+
+            {{ r.client.nom }}
+
+        </div>
+
+        <div class="notif-text">
+
+            souhaite réserver
+
+            <strong>
+                {{ r.salle.type }}
+            </strong>
+
+            du
+
+            <strong>
+                {{ r.dateDebut }}
+            </strong>
+
+            au
+
+            <strong>
+                {{ r.dateFin }}
+            </strong>
+
+        </div>
+
+        <div class="mb-4">
+
+            <span class="badge-wait">
+
+                En attente
+
+            </span>
+
+        </div>
+
+        <a href="{% url 'confirmer_reservation' r.id %}"
+           class="btn-action confirm">
+
+            Confirmer
+
+        </a>
+
+        <a href="{% url 'rejeter_reservation' r.id %}"
+           class="btn-action reject">
+
+            Rejeter
+
+        </a>
+
+    </div>
+
+    {% endif %}
+
+    {% empty %}
+
+    <h4>
+
+        Aucun notification
+
+    </h4>
+
+    {% endfor %}
+
+</div>
+
+</body>
+
+</html>

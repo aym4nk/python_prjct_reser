@@ -2,18 +2,22 @@ from django.urls import path
 
 from .views import (
     acceuil,
+    confirmer_reservation,
     login_view,
+    notifications_admin,
     register_view,
     main,
     logout_view,
     admin_dashboard,
+    rejeter_reservation,
     toggle_dispo,
     edit_salle,
     delete_salle,
     delete_user,
     reserver_salle,
     panier,
-    annuler_reservation
+    annuler_reservation,
+    notifications_admin,
 )
 
 urlpatterns = [
@@ -63,5 +67,28 @@ urlpatterns = [
     'annuler-reservation/<int:reservation_id>/',
     annuler_reservation,
     name='annuler_reservation'
+),
+    path(
+    'notifications/',
+    notifications_admin,
+    name='notifications_admin'
+),
+    
+    path(
+    'notifications/',
+    notifications_admin,
+    name='notifications_admin'
+),
+
+path(
+    'confirmer-reservation/<int:reservation_id>/',
+    confirmer_reservation,
+    name='confirmer_reservation'
+),
+
+path(
+    'rejeter-reservation/<int:reservation_id>/',
+    rejeter_reservation,
+    name='rejeter_reservation'
 ),
 ]

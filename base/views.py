@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
-
+from reservations.models import Reservation
 from salles.models import Salle, Disponibilite
 
 
@@ -120,6 +120,7 @@ def main(request):
 
         reserved = Reservation.objects.filter(
             salle=salle,
+            statut__in=["En attente", "Confirmée"],
             dateDebut__lte=today,
             dateFin__gte=today
         ).exists()
@@ -141,6 +142,8 @@ def admin_dashboard(request):
 
     users = User.objects.all()
 
+    reservations = Reservation.objects.all().order_by('-id')
+
     data = []
 
     today = date.today()
@@ -149,6 +152,7 @@ def admin_dashboard(request):
 
         reserved = Reservation.objects.filter(
             salle=salle,
+            statut__in=["En attente", "Confirmée"],
             dateDebut__lte=today,
             dateFin__gte=today
         ).exists()
@@ -159,8 +163,13 @@ def admin_dashboard(request):
         })
 
     return render(request, 'base/admin.html', {
+
         'data': data,
-        'users': users
+
+        'users': users,
+
+        'reservations': reservations
+
     })
 # 🚪 Logout
 def logout_view(request):
@@ -279,7 +288,7 @@ def reserver_salle(request, salle_id):
             client=client,
             dateDebut=date_debut,
             dateFin=date_fin,
-            statut='Confirmée'
+            statut='En attente'
         )
 
         return redirect('main')
@@ -317,3 +326,58 @@ def annuler_reservation(request, reservation_id):
     reservation.delete()
 
     return redirect('panier')
+
+
+    
+@login_required
+def notifications_admin(request):
+
+    reservations = Reservation.objects.filter(
+        statut="En attente"
+    ).order_by('-id')
+
+    return render(
+        request,
+        'base/notifications.html',
+        {
+            'reservations': reservations
+        }
+    )
+    
+@login_required
+def confirmer_reservation(request, reservation_id):
+
+    reservation = get_object_or_404(
+        Reservation,
+        id=reservation_id
+    )
+
+    reservation.statut = "Confirmée"
+
+    reservation.save()
+
+    return redirect('notifications_admin')
+
+@login_required
+def rejeter_reservation(request, reservation_id):
+
+    reservation = get_object_or_404(
+        Reservation,
+        id=reservation_id
+    )
+
+    reservation.statut = "Rejetée"
+
+    reservation.save()
+
+    dispo = Disponibilite.objects.filter(
+        salle=reservation.salle
+    ).first()
+
+    if dispo:
+
+        dispo.estDisponible = True
+
+        dispo.save()
+
+    return redirect('notifications_admin')
